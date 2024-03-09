@@ -1,0 +1,55 @@
+import speech_recognition as sr
+import pyttsx3
+from gtts import gTTS
+import os
+import datetime
+import webbrowser
+# Initialize the speech recognition engine
+r = sr.Recognizer()
+
+# Initialize the text-to-speech engine
+engine = pyttsx3.init()
+
+# Function to convert text to speech
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+
+# Function to get the current time
+def get_time():
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    return current_time
+
+# Function to search Google
+def search_google(query):
+    url = f"https://www.google.com/search?q={query}"
+    webbrowser.open(url)
+# Main loop
+while True:
+       
+        try:
+            with sr.Microphone() as source:
+                   
+              
+                
+                print("Listening...")
+                audio = r.listen(source)
+                text = r.recognize_google(audio)
+                print("You said:", text)
+
+                if "search" in text:
+                    query = text.replace("search", "").strip()
+                    search_google(query)
+                elif "time" in text:
+                    current_time = get_time()
+                    speak(f"The current time is {current_time}")
+                elif "email" in text:
+                    # Code to prompt user for email details and call send_email function
+                    pass
+                elif "exit" in text:
+                    break
+        except sr.UnknownValueError:
+            print("Sorry, I didn't catch that. Please try again.")
+        except sr.RequestError:
+            print("Sorry, I'm having trouble accessing the speech recognition service.")
