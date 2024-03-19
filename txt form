@@ -1,9 +1,9 @@
+import tkinter as tk
 import speech_recognition as sr
 import pyttsx3
-from gtts import gTTS
-import os
-import datetime
 import webbrowser
+import datetime
+
 # Initialize the speech recognition engine
 r = sr.Recognizer()
 
@@ -25,31 +25,43 @@ def get_time():
 def search_google(query):
     url = f"https://www.google.com/search?q={query}"
     webbrowser.open(url)
-# Main loop
-while True:
-       
-        try:
-            with sr.Microphone() as source:
-                   
-              
-                
-                print("Listening...")
-                audio = r.listen(source)
-                text = r.recognize_google(audio)
-                print("You said:", text)
 
-                if "search" in text:
-                    query = text.replace("search", "").strip()
-                    search_google(query)
-                elif "time" in text:
-                    current_time = get_time()
-                    speak(f"The current time is {current_time}")
-                elif "email" in text:
-                    # Code to prompt user for email details and call send_email function
-                    pass
-                elif "exit" in text:
-                    break
+
+# Create the main window
+root = tk.Tk()
+root.geometry('500x500')
+root.title('Voice Assistant')
+
+# Create a label for displaying recognized text
+text_label = tk.Label(root, text="Listening...", fg="black", font=("Arial", 14))
+text_label.pack(pady=20)
+
+# Function to handle speech recognition
+def recognize_speech():
+    with sr.Microphone() as source:
+        audio = r.listen(source)
+        try:
+            text = r.recognize_google(audio)
+            text_label.config(text="You said: " + text)
+            if "search" in text:
+                query = text.replace("search", "").strip()
+                search_google(query)
+            elif "time" in text:
+                current_time = get_time()
+                speak(f"The current time is {current_time}")
+            elif "email" in text:
+                # Code to prompt user for email details and call send_email function
+                pass
+            elif "exit" in text:
+                root.destroy()
         except sr.UnknownValueError:
-            print("Sorry, I didn't catch that. Please try again.")
+            text_label.config(text="Sorry, I didn't catch that. Please try again.")
         except sr.RequestError:
-            print("Sorry, I'm having trouble accessing the speech recognition service.")
+            text_label.config(text="Sorry, I'm having trouble accessing the speech recognition service.")
+
+# Create a button to start speech recognition
+start_button = tk.Button(root, text="Start", command=recognize_speech)
+start_button.pack(pady=10)
+
+# Run the Tkinter event loop
+root.mainloop()
