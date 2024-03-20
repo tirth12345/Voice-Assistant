@@ -1,8 +1,23 @@
+
+
+from pathlib import Path
+
+
+
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter.ttk import Style
+
+
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\tirth\Desktop\Code\Python\CTkinter\build\assets\frame0")
+
 import tkinter as tk
 import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import datetime
+from tkinter import Label
+from PIL import Image, ImageTk
 
 # Initialize the speech recognition engine
 r = sr.Recognizer()
@@ -26,15 +41,45 @@ def search_google(query):
     url = f"https://www.google.com/search?q={query}"
     webbrowser.open(url)
 
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
 
-# Create the main window
-root = tk.Tk()
-root.geometry('500x500')
-root.title('Voice Assistant')
+
+window = Tk()
+window.title("Voice Assistant")
+window.geometry("500x500")
+window.configure(bg = "#B1DFF3")
+
+
+canvas = Canvas(
+    window,
+    bg = "#B1DFF3",
+    height = 500,
+    width = 500,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+)
+
+canvas.place(x = 0, y = 0)
+canvas.create_text(
+   152.0,
+    10.0,
+    anchor="nw",
+    text="Voice Assistant",
+    fill="#CB33C5",
+    font=("Inika Bold", 32 * -1)
+)
+
+
 
 # Create a label for displaying recognized text
-text_label = tk.Label(root, text="Listening...", fg="black", font=("Arial", 14))
-text_label.pack(pady=20)
+text_label = tk.Label(window, text="Listening...", fg="black", font=("Arial", 14))
+text_label.pack(pady=70)
+
+
+
+
 
 # Function to handle speech recognition
 def recognize_speech():
@@ -53,15 +98,23 @@ def recognize_speech():
                 # Code to prompt user for email details and call send_email function
                 pass
             elif "exit" in text:
-                root.destroy()
+                window.destroy()
         except sr.UnknownValueError:
             text_label.config(text="Sorry, I didn't catch that. Please try again.")
         except sr.RequestError:
             text_label.config(text="Sorry, I'm having trouble accessing the speech recognition service.")
 
-# Create a button to start speech recognition
-start_button = tk.Button(root, text="Start", command=recognize_speech)
-start_button.pack(pady=10)
 
-# Run the Tkinter event loop
-root.mainloop()
+button_1 = Button(window, text="Click To Activate", command=recognize_speech, bg="#0F98D3", fg="white", font=("Arial", 14), relief="flat")
+
+button_1.place(
+    x=83.0,
+    y=344.0,
+    width=330.0,
+    height=53.0
+)
+# Create the main window
+
+
+window.resizable(False, False)
+window.mainloop()
